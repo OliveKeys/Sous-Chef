@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="seafoam_green">#9FE2BF</color>
-    <color name="light_gray">#E4DEDE</color>
+    <color name="light_gray">#C3BEBE</color>
+    <color name="green">#00A64F</color>
 </resources>

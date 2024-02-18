@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.oliveskies.sous_chef.R;
 import com.oliveskies.sous_chef.adapters.IngredientsListAdapter;
+import com.oliveskies.sous_chef.adapters.StepListAdapter;
 import com.oliveskies.sous_chef.database_models.Ingredient;
 import com.oliveskies.sous_chef.database_models.Recipe;
+import com.oliveskies.sous_chef.database_models.Step;
 
 import java.util.List;
 
@@ -80,6 +82,16 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        recipeStepsLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(recipeStepsList.getVisibility() == View.VISIBLE)
+                    recipeStepsList.setVisibility(View.GONE);
+                else
+                    recipeStepsList.setVisibility(View.VISIBLE);
+            }
+        });
+
         recipeBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,14 +101,20 @@ public class RecipeFragment extends Fragment {
         recipeStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Starting recipe", Toast.LENGTH_SHORT).show();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentView, new StepFragment(recipe)).addToBackStack(null).commit();
             }
         });
+
+        if(recipe.getStepsCount() == 0)
+            recipeStartButton.setVisibility(View.INVISIBLE);
 
         List<Ingredient> ingredients = recipe.getIngredients();
         IngredientsListAdapter ingredientsAdapter = new IngredientsListAdapter(getContext(), ingredients);
         recipeIngredientsList.setAdapter(ingredientsAdapter);
 
+        List<Step> steps = recipe.getSteps();
+        StepListAdapter stepsAdapter = new StepListAdapter(getContext(), steps);
+        recipeStepsList.setAdapter(stepsAdapter);
         return view;
     }
 }

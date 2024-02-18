@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "303775043249",
+    "project_id": "sous-chef-9b37f",
+    "storage_bucket": "sous-chef-9b37f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303775043249:android:e0691571889851267a1c90",
+        "android_client_info": {
+          "package_name": "com.oliveskies.sous_chef"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "303775043249-u3vpg4lt62op64b6ambe0s6s2vsv4vu9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.oliveskies.sous_chef",
+            "certificate_hash": "8cb821c0cfc88ff0808eeca4546387d9b34a1ab1"
+          }
+        },
+        {
+          "client_id": "303775043249-gdth7n212mja55e0b5tonofcql2fpn7g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpYW4kRoTbKA7F8-hN4SVMbd8qKMvZUX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303775043249-gdth7n212mja55e0b5tonofcql2fpn7g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

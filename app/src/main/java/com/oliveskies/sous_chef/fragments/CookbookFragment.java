@@ -1,4 +1,4 @@
-package com.oliveskies.sous_chef;
+package com.oliveskies.sous_chef.fragments;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -32,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.DocumentReference;
+import com.oliveskies.sous_chef.MainActivity;
+import com.oliveskies.sous_chef.R;
 import com.oliveskies.sous_chef.adapters.RecipeRecyclerAdapter;
 import com.oliveskies.sous_chef.database_models.Ingredient;
 import com.oliveskies.sous_chef.database_models.Recipe;
@@ -163,6 +165,7 @@ public class CookbookFragment extends Fragment {
         super.onStart();
         recipeRecyclerAdapter.startListening();
     }
+
 
     @Override
     public void onStop() {

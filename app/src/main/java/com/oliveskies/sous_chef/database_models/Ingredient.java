@@ -26,6 +26,9 @@ public class Ingredient {
     }
 
     public String getName() { return mName; }
+    public void setName(String name) { mName = name; }
     public String getQuantity() { return mQuantity; }
+    public void setQuantity(String quantity) { mQuantity = quantity; }
     public String getNotes() { return mNotes; }
+    public void setNotes(String notes) { mNotes = notes; }
 }

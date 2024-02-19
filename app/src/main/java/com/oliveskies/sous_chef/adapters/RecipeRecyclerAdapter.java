@@ -14,13 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.oliveskies.sous_chef.R;
-import com.oliveskies.sous_chef.RecipeFragment;
+import com.oliveskies.sous_chef.fragments.RecipeFragment;
 import com.oliveskies.sous_chef.database_models.Recipe;
 import com.oliveskies.sous_chef.view_holders.RecipeViewHolder;
-import com.oliveskies.sous_chef.view_holders.click_listeners.RecipeClickListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeRecyclerAdapter extends FirebaseRecyclerAdapter<Recipe, RecipeViewHolder> {
     /**

@@ -1,4 +1,4 @@
-package com.oliveskies.sous_chef;
+package com.oliveskies.sous_chef.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oliveskies.sous_chef.R;
 import com.oliveskies.sous_chef.adapters.IngredientsListAdapter;
 import com.oliveskies.sous_chef.database_models.Ingredient;
 import com.oliveskies.sous_chef.database_models.Recipe;

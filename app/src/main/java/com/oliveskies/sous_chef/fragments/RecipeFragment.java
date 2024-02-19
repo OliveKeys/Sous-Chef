@@ -1,4 +1,4 @@
-package com.oliveskies.sous_chef;
+package com.oliveskies.sous_chef.fragments;
 
 import android.os.Bundle;
 
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.oliveskies.sous_chef.R;
 import com.oliveskies.sous_chef.adapters.IngredientsListAdapter;

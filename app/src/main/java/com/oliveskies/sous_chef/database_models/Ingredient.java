@@ -4,9 +4,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.GenericTypeIndicator;
 
 public class Ingredient {
-    private String mName;
-    private String mQuantity;
-    private String mNotes;
+    private String mName = "";
+    private String mQuantity = "";
+    private String mNotes = "";
 
     public Ingredient() {}
     public Ingredient(String name, String quantity, String notes)

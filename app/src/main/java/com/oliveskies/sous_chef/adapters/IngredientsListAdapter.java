@@ -36,7 +36,8 @@ public class IngredientsListAdapter extends ArrayAdapter<Ingredient> {
         // Populate the data into the template view using the data object
         ingredientName.setText(ingredient.getName());
         ingredientQuantity.setText(ingredient.getQuantity());
-        if(!ingredient.getNotes().isEmpty())
+
+        if(ingredient.getNotes() != null && !ingredient.getNotes().isEmpty())
             ingredientNotes.setText(ingredient.getNotes());
         else
             ingredientNotes.setVisibility(GONE);

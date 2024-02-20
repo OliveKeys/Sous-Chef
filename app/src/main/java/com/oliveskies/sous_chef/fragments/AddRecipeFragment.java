@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -20,6 +21,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,6 +35,8 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.j2objc.annotations.Weak;
 import com.oliveskies.sous_chef.MainActivity;
 import com.oliveskies.sous_chef.R;
@@ -52,6 +58,8 @@ public class AddRecipeFragment extends Fragment {
     EditText generalPrepTimeText;
     EditText generalCookTimeText;
     EditText generalTotalTimeText;
+    EditText generalDescriptionText;
+    EditText generalServingsText;
     ListView generalIngredientsListView;
     Button generalAddIngredientButton;
     Button generalFirstStepButton;
@@ -70,11 +78,13 @@ public class AddRecipeFragment extends Fragment {
     ImageButton stepDeleteButton;
     ConstraintLayout stepButtonsContainer;
 
-    String title;
+    String title = "";
     Uri image = null;
-    String prepTime;
-    String cookTime;
-    String totalTime;
+    String description = "";
+    String servings = "";
+    String prepTime = "";
+    String cookTime = "";
+    String totalTime = "";
     List<Ingredient> ingredients = new ArrayList<>();
     List<Step> steps = new ArrayList<>();
     WeakReference<List<Ingredient>> generalIngredientsReference = new WeakReference<List<Ingredient>>(ingredients);
@@ -82,7 +92,8 @@ public class AddRecipeFragment extends Fragment {
     WeakReference<List<Ingredient>> stepIngredientsReference = null;
     WeakReference<ListView> stepIngredientsListReference;
     WeakReference<ConstraintLayout> stepButtonsReference;
-    int currentStep;
+    int currentStep = -1;
+    MenuItem saveRecipe;
 
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -100,10 +111,42 @@ public class AddRecipeFragment extends Fragment {
     public AddRecipeFragment() {
         // Required empty public constructor
     }
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.add_recipe_toolbar_menu, menu);
+        saveRecipe = menu.findItem(R.id.add_recipe_toolbar_save);
+        saveRecipe.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setCancelable(true);
+                builder.setTitle("Save Recipe");
+                builder.setMessage("Are you sure you want to save this recipe? You won't be able to modify it afterwards.");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                saveRecipeToDatabase();
+                            }
+                        });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
 
@@ -115,6 +158,8 @@ public class AddRecipeFragment extends Fragment {
         generalView = view.findViewById(R.id.add_recipe_general_info_container);
         generalTitleText = view.findViewById(R.id.add_recipe_title_form);
         generalImageView = view.findViewById(R.id.add_recipe_image_view);
+        generalDescriptionText = view.findViewById(R.id.add_recipe_description_form);
+        generalServingsText = view.findViewById(R.id.add_recipe_servings_form);
         generalPrepTimeText = view.findViewById(R.id.add_recipe_times_prep_form);
         generalCookTimeText = view.findViewById(R.id.add_recipe_times_cook_form);
         generalTotalTimeText = view.findViewById(R.id.add_recipe_times_total_form);
@@ -294,6 +339,40 @@ public class AddRecipeFragment extends Fragment {
             }
         });
 
+        generalDescriptionText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                description = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        generalServingsText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                servings = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         generalAddIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -336,7 +415,9 @@ public class AddRecipeFragment extends Fragment {
         stepView.setVisibility(View.GONE);
         generalView.setVisibility(View.VISIBLE);
         currentStep = -1;
+        generalDescriptionText.setText(description);
         generalTitleText.setText(title);
+        generalServingsText.setText(servings);
         if(image != null)
             Glide.with(getContext()).load(image).into(generalImageView);
         generalPrepTimeText.setText(prepTime);
@@ -535,4 +616,87 @@ public class AddRecipeFragment extends Fragment {
         layoutParams.height = Utility.calculateHeight(stepIngredientsListView);
         stepIngredientsListView.setLayoutParams(layoutParams);
     }
+
+    void saveRecipeToDatabase()
+    {
+        if(title == null || title.isEmpty()) {
+            Toast.makeText(activity, "Title cannot be empty", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(prepTime == null || cookTime == null || totalTime == null || prepTime.isEmpty() || cookTime.isEmpty() || totalTime.isEmpty()) {
+            Toast.makeText(activity, "Please fill in prep time, cooking time and total time.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(steps.size() == 0) {
+            Toast.makeText(activity, "Needs at least 1 step", Toast.LENGTH_LONG).show();
+            return;
+        }
+        FirebaseDatabase database = FirebaseDatabase.getInstance(getString(R.string.database_url));
+        DatabaseReference reference = database.getReference().child("recipes");
+        DatabaseReference newRecipeEntry = reference.push();
+        newRecipeEntry.child("cooking_time").setValue(cookTime);
+        newRecipeEntry.child("prep_time").setValue(prepTime);
+        newRecipeEntry.child("total_cooking_time").setValue(totalTime);
+        newRecipeEntry.child("description").setValue(description);
+        newRecipeEntry.child("name").setValue(title);
+        newRecipeEntry.child("name_CaseInsensitive").setValue(title.toLowerCase());
+        newRecipeEntry.child("servings").setValue(servings);
+
+        for(int i = 0; i < ingredients.size(); ++ i) {
+            newRecipeEntry.child("ingredients").child(Integer.toString(i)).child("name").setValue(ingredients.get(i).getName());
+            newRecipeEntry.child("ingredients").child(Integer.toString(i)).child("notes").setValue(ingredients.get(i).getNotes());
+            newRecipeEntry.child("ingredients").child(Integer.toString(i)).child("quantity").setValue(ingredients.get(i).getQuantity());
+        }
+
+        for(int i = 0; i < steps.size(); ++ i) {
+            newRecipeEntry.child("steps").child(Integer.toString(i)).child("instructions").setValue(steps.get(i).getInstructions());
+            newRecipeEntry.child("steps").child(Integer.toString(i)).child("timer_duration").setValue(steps.get(i).getTimerDuration());
+            for(int j = 0; j < steps.get(i).mIngredients.size(); ++ j) {
+                newRecipeEntry.child("steps").child(Integer.toString(i))
+                        .child("ingredients").child(Integer.toString(j))
+                        .child("name").setValue(steps.get(i).mIngredients.get(j).getName());
+                newRecipeEntry.child("steps").child(Integer.toString(i))
+                        .child("ingredients").child(Integer.toString(j))
+                        .child("notes").setValue(steps.get(i).mIngredients.get(j).getNotes());
+                newRecipeEntry.child("steps").child(Integer.toString(i))
+                        .child("ingredients").child(Integer.toString(j))
+                        .child("quantity").setValue(steps.get(i).mIngredients.get(j).getQuantity());
+            }
+        }
+
+        title = "";
+        prepTime = "";
+        cookTime = "";
+        totalTime = "";
+        description = "";
+        servings = "";
+        image = null;
+        ingredients.clear();
+        prepareGeneralInfoView();
+        steps.clear();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setCancelable(true);
+        builder.setTitle("Recipe Saved");
+        builder.setMessage("Your recipe has been added successfully!");
+        builder.setPositiveButton("Yippeeeee!!!",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.setNegativeButton("...I think I forgot something", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

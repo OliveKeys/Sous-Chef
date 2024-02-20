@@ -2,19 +2,20 @@ package com.oliveskies.sous_chef.database_models;
 
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Recipe {
-    private String mName;
-    private String mCookingTime;
-    private List<Ingredient> mIngredients;
-    private String mPrepTime;
-    private String mServings;
-    private List<String> mTags;
-    private String mTotalCookingTime;
-    private List<Step> mSteps;
-    private String mDescription;
+    private String mName = "";
+    private String mCookingTime = "";
+    private List<Ingredient> mIngredients = new ArrayList<>();
+    private String mPrepTime = "";
+    private String mServings = "";
+    private List<String> mTags = new ArrayList<>();
+    private String mTotalCookingTime = "";
+    private List<Step> mSteps = new ArrayList<>();
+    private String mDescription = "";
     public Recipe() {}
 
     public Recipe(String name, String cookingTime, String prepTime, String totalCookingTime, String servings, List<Ingredient> ingredients, String description, List<String> tags, List<Step> steps)

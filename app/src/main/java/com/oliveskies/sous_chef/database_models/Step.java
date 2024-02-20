@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Step {
-    public List<Ingredient> mIngredients;
-    private String mInstructions;
-    private double mTimerDuration;
+    public List<Ingredient> mIngredients = new ArrayList<>();
+    private String mInstructions = "";
+    private double mTimerDuration = 0;
 
-    public Step() {
-        mIngredients = new ArrayList<>();
-    }
+    public Step() { }
     public Step(String instructions, double timerDuration, List<Ingredient> ingredients)
     {
         mIngredients = ingredients;

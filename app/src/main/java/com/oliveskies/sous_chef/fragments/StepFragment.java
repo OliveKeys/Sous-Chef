@@ -1,7 +1,9 @@
 package com.oliveskies.sous_chef.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -28,6 +30,8 @@ import com.oliveskies.sous_chef.database_models.Recipe;
 import com.oliveskies.sous_chef.database_models.Step;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class StepFragment extends Fragment {
@@ -49,6 +53,11 @@ public class StepFragment extends Fragment {
     public StepFragment(Recipe recipe) {
         this.recipe = recipe;
         currentStep = 0;
+    }
+
+    public StepFragment(Recipe recipe, int currentStep) {
+        this.recipe = recipe;
+        this.currentStep = currentStep;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -231,5 +240,24 @@ public class StepFragment extends Fragment {
             timerBar.setProgress(0);
             timerButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        SharedPreferences  sharedPreferences = getContext().getSharedPreferences("RecipeHistory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        int historyId = sharedPreferences.getInt("history_id", 0);
+        editor.putString("record_" + Integer.toString(historyId) + "_key", recipe.getKey());
+        editor.putInt("record_" + Integer.toString(historyId) + "_step", currentStep);
+        SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
+        String dateString=sdf.format(Calendar.getInstance().getTime());
+        editor.putString("record_"  + Integer.toString(historyId) + "_time", dateString);
+        historyId += 1;
+        editor.putInt("history_id", historyId);
+
+        editor.apply();
+
+        super.onDestroy();
     }
 }

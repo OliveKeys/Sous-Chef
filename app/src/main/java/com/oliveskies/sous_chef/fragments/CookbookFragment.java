@@ -32,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.oliveskies.sous_chef.MainActivity;
 import com.oliveskies.sous_chef.R;
 import com.oliveskies.sous_chef.adapters.RecipeRecyclerAdapter;
@@ -55,9 +57,12 @@ public class CookbookFragment extends Fragment {
 
     RecipeRecyclerAdapter recipeRecyclerAdapter;
 
+    StorageReference storageRootReference;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        storageRootReference = FirebaseStorage.getInstance(getActivity().getString(R.string.storage_link)).getReference();
         super.onCreate(savedInstanceState);
     }
 
@@ -126,8 +131,12 @@ public class CookbookFragment extends Fragment {
                                 String prepTime = snapshot.child("prep_time").getValue(stringIndicator);
                                 String totalCookingTime = snapshot.child("total_cooking_time").getValue(stringIndicator);
                                 String servings = snapshot.child("servings").getValue(stringIndicator);
+                                String imageLink = snapshot.child("image_link").getValue(stringIndicator);
                                 String description = snapshot.child("description").getValue(stringIndicator);
-                                return new Recipe(name, cookingTime, prepTime, totalCookingTime, servings, ingredientList, description, tagList, stepList);
+                                Recipe recipe = new Recipe(name, cookingTime, prepTime, totalCookingTime, servings, ingredientList, description, tagList, stepList, imageLink);
+                                recipe.setKey(snapshot.getKey());
+                                recipe.setImageReference(storageRootReference);
+                                return recipe;
                             }
                         }).build();
         return options;

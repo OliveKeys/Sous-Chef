@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.oliveskies.sous_chef.R;
@@ -25,6 +26,7 @@ public class RecipeRecyclerAdapter extends FirebaseRecyclerAdapter<Recipe, Recip
      *
      * @param options
      */
+    Context context;
     public RecipeRecyclerAdapter(@NonNull FirebaseRecyclerOptions<Recipe> options) {
         super(options);
     }
@@ -32,7 +34,7 @@ public class RecipeRecyclerAdapter extends FirebaseRecyclerAdapter<Recipe, Recip
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View recipeView = inflater.inflate(R.layout.recipe_card, parent, false);
         RecipeViewHolder recipeViewHolder = new RecipeViewHolder(recipeView);
@@ -52,7 +54,17 @@ public class RecipeRecyclerAdapter extends FirebaseRecyclerAdapter<Recipe, Recip
                 tags.append(", ");
         }
         holder.RecipeTags.setText(tags.toString());
-
+        if(model.getImageReference() != null)
+        {
+            Glide.with(context).load(model.getImageReference()).into(holder.RecipeImage);
+            holder.RecipeImage.setVisibility(View.VISIBLE);
+            holder.RecipeSeparator.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.RecipeImage.setVisibility(View.INVISIBLE);
+            holder.RecipeSeparator.setVisibility(View.INVISIBLE);
+        }
         holder.card.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -63,6 +75,5 @@ public class RecipeRecyclerAdapter extends FirebaseRecyclerAdapter<Recipe, Recip
 
         });
     }
-
 
 }

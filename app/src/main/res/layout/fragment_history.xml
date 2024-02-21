@@ -4,26 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.CookbookFragment">
+    tools:context=".HistoryFragment">
+
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cookbook_toolbar"
+        android:id="@+id/history_toolbar"
         android:background="@color/seafoam_green"
-        app:logo="@drawable/ic_book_black_24dp"
+        app:logo="@drawable/ic_history_black_24dp"
         app:titleMarginStart="30dp"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/history_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="20dp"
-        android:id="@+id/cookbook_recycler_view"
-        app:layout_constraintTop_toBottomOf="@id/cookbook_toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/history_toolbar">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:id="@+id/history_recycler"
+            tools:listitem="@layout/history_card"/>
 
-    <!-- TODO: Update blank fragment layout -->
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

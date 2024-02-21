@@ -3,7 +3,10 @@ package com.oliveskies.sous_chef.fragments;
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,17 +29,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.j2objc.annotations.Weak;
 import com.oliveskies.sous_chef.MainActivity;
 import com.oliveskies.sous_chef.R;
@@ -52,6 +63,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddRecipeFragment extends Fragment {
+    ConstraintLayout root;
+
     Toolbar toolbar;
     EditText generalTitleText;
     ImageView generalImageView;
@@ -154,6 +167,7 @@ public class AddRecipeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_recipe, container, false);
+        root = view.findViewById(R.id.add_recipe_root);
 
         generalView = view.findViewById(R.id.add_recipe_general_info_container);
         generalTitleText = view.findViewById(R.id.add_recipe_title_form);
@@ -633,9 +647,44 @@ public class AddRecipeFragment extends Fragment {
             Toast.makeText(activity, "Needs at least 1 step", Toast.LENGTH_LONG).show();
             return;
         }
+
+
+
         FirebaseDatabase database = FirebaseDatabase.getInstance(getString(R.string.database_url));
         DatabaseReference reference = database.getReference().child("recipes");
         DatabaseReference newRecipeEntry = reference.push();
+        if(image != null)
+        {
+            ProgressBar progressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleLarge);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            final boolean[] successState = {true};
+            String fileName = "RecipeImages/" + newRecipeEntry.getKey();
+            StorageReference storageReference = FirebaseStorage.getInstance(getString(R.string.storage_link)).getReference().child(fileName);
+            storageReference.putFile(image)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressBar.setVisibility(View.GONE);
+                            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            Toast.makeText(getContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressBar.setVisibility(View.GONE);
+                            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            Toast.makeText(getContext(), "Image failed to Upload", Toast.LENGTH_LONG).show();
+                            successState[0] = false;
+                        }
+                    });
+            if(!successState[0])
+                return;
+            newRecipeEntry.child("image_link").setValue(fileName);
+        }
+
         newRecipeEntry.child("cooking_time").setValue(cookTime);
         newRecipeEntry.child("prep_time").setValue(prepTime);
         newRecipeEntry.child("total_cooking_time").setValue(totalTime);

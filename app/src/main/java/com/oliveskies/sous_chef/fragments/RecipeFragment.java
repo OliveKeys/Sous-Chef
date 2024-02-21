@@ -2,6 +2,7 @@ package com.oliveskies.sous_chef.fragments;
 
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.oliveskies.sous_chef.R;
+import com.oliveskies.sous_chef.Utility;
 import com.oliveskies.sous_chef.adapters.IngredientsListAdapter;
 import com.oliveskies.sous_chef.adapters.StepListAdapter;
 import com.oliveskies.sous_chef.database_models.Ingredient;
@@ -35,6 +38,8 @@ public class RecipeFragment extends Fragment {
     ImageView recipeStartButton;
     TextView recipeIngredientsLabel;
     TextView recipeStepsLabel;
+
+    ConstraintLayout imageContainer;
     public RecipeFragment(Recipe model) {
         recipe = model;
     }
@@ -63,6 +68,7 @@ public class RecipeFragment extends Fragment {
         recipeStartButton = view.findViewById(R.id.recipe_page_start_button);
         recipeIngredientsLabel = view.findViewById(R.id.recipe_page_ingredients_label);
         recipeStepsLabel = view.findViewById(R.id.recipe_page_steps_label);
+        imageContainer = view.findViewById(R.id.recipe_page_image_border);
 
         recipeTitle.setText(recipe.getName());
         recipeDescription.setText(recipe.getDescription());
@@ -104,12 +110,25 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        if(recipe.getImageReference() != null)
+        {
+            Glide.with(getContext()).load(recipe.getImageReference()).into(recipeImage);
+            imageContainer.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            imageContainer.setVisibility(View.INVISIBLE);
+        }
+
         if(recipe.getStepsCount() == 0)
             recipeStartButton.setVisibility(View.INVISIBLE);
 
         List<Ingredient> ingredients = recipe.getIngredients();
         IngredientsListAdapter ingredientsAdapter = new IngredientsListAdapter(getContext(), ingredients);
         recipeIngredientsList.setAdapter(ingredientsAdapter);
+        ViewGroup.LayoutParams layoutParams = recipeIngredientsList.getLayoutParams();
+        layoutParams.height = Utility.calculateHeight(recipeIngredientsList);
+        recipeIngredientsList.setLayoutParams(layoutParams);
 
         List<Step> steps = recipe.getSteps();
         StepListAdapter stepsAdapter = new StepListAdapter(getContext(), steps);

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="@color/light_gray"
+        app:cardElevation="5dp"
+        android:layout_margin="10dp"
+        android:id="@+id/history_card_card">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/history_card_image"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:src="@drawable/ic_missing_gray_40dp"/>
+
+            <View
+                android:id="@+id/history_card_vertical_separator"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/black"
+                app:layout_constraintRight_toLeftOf="@id/history_card_image"/>
+            <TextView
+                android:id="@+id/history_card_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="serif"
+                android:padding="5dp"
+                android:text="Fudgy fdk gsgdlf jdsglkds jfdkldsklf jasldkfj slk jBrownies"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                app:layout_constraintBottom_toTopOf="@id/history_card_extra_container"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/history_card_image"
+                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/history_card_extra_container"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/history_card_image"
+                app:layout_constraintTop_toBottomOf="@id/history_card_title"
+                app:layout_constraintBottom_toBottomOf="parent" >
+                    <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/history_card_step"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:text="step test"
+                    android:textSize="16dp"
+                    android:textStyle="italic"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/history_card_date" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/history_card_date"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:text="312 1231212 1 123"
+                    android:textSize="16dp"
+                    android:textStyle="italic"
+                    app:layout_constraintTop_toBottomOf="@id/history_card_step"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

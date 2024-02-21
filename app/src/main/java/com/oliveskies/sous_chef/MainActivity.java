@@ -25,15 +25,13 @@ import com.oliveskies.sous_chef.fragments.CookbookFragment;
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navBar;
 
-    CookbookFragment cookbookFragment = new CookbookFragment();
-    AddRecipeFragment addRecipeFragment = new AddRecipeFragment();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragmentView, cookbookFragment);
+        fragmentTransaction.add(R.id.fragmentView, new CookbookFragment());
         fragmentTransaction.commit();
 
         navBar = findViewById(R.id.nav_view);
@@ -42,12 +40,22 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.navigation_cookbook) {
-                    fragmentManager.beginTransaction().replace(R.id.fragmentView, cookbookFragment).addToBackStack(null).commit();
+                    clearBackStack(fragmentManager);
+                    fragmentManager.beginTransaction().replace(R.id.fragmentView, new CookbookFragment()).commit();
                     return true;
                 } else if (itemId == R.id.navigation_history) {
+                    clearBackStack(fragmentManager);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragmentView, new CookbookFragment())
+                            .replace(R.id.fragmentView, new HistoryFragment()).addToBackStack(null)
+                            .commit();
                     return true;
                 } else if (itemId == R.id.navigation_add_recipe) {
-                    fragmentManager.beginTransaction().replace(R.id.fragmentView, addRecipeFragment).addToBackStack(null).commit();
+                    clearBackStack(fragmentManager);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragmentView, new CookbookFragment())
+                            .replace(R.id.fragmentView, new AddRecipeFragment()).addToBackStack(null)
+                            .commit();
                     return true;
                 }
                 return false;
@@ -70,5 +78,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.dispatchTouchEvent(event);
+    }
+    private void clearBackStack(FragmentManager fragmentManager) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(0);
+            fragmentManager.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 }

@@ -126,13 +126,16 @@ public class RecipeFragment extends Fragment {
         List<Ingredient> ingredients = recipe.getIngredients();
         IngredientsListAdapter ingredientsAdapter = new IngredientsListAdapter(getContext(), ingredients);
         recipeIngredientsList.setAdapter(ingredientsAdapter);
-        ViewGroup.LayoutParams layoutParams = recipeIngredientsList.getLayoutParams();
-        layoutParams.height = Utility.calculateHeight(recipeIngredientsList);
-        recipeIngredientsList.setLayoutParams(layoutParams);
+        ViewGroup.LayoutParams layoutParamsIngredients = recipeIngredientsList.getLayoutParams();
+        layoutParamsIngredients.height = Utility.calculateHeight(recipeIngredientsList);
+        recipeIngredientsList.setLayoutParams(layoutParamsIngredients);
 
         List<Step> steps = recipe.getSteps();
         StepListAdapter stepsAdapter = new StepListAdapter(getContext(), steps);
         recipeStepsList.setAdapter(stepsAdapter);
+        ViewGroup.LayoutParams layoutParamsSteps = recipeStepsList.getLayoutParams();
+        layoutParamsSteps.height = Utility.calculateHeight(recipeStepsList);
+        recipeStepsList.setLayoutParams(layoutParamsSteps);
         return view;
     }
 }

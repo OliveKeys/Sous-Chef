@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/step_page_top_bar"
                 android:background="@color/seafoam_green"
                 android:elevation="10dp"
@@ -27,17 +27,19 @@
                     android:layout_marginLeft="10dp"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/step_page_recipe_title"
                     android:text="Title"
                     android:textSize="25dp"
+                    android:gravity="center_horizontal"
                     android:textStyle="bold"
                     android:fontFamily="serif"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/step_page_close_button"
                     app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginRight="40dp"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
